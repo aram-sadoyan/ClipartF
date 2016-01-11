@@ -2,6 +2,7 @@ package com.example.user.clipartf;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
+
 public class Clip extends FrameLayout {
 
     ImageView btnRemove, btnMove, border, image;
     EditText textV;
+    float count;
     FrameLayout.LayoutParams moveBtnp, borderP, imageP, clipParams;
 
     FrameLayout.LayoutParams removBtnP;
@@ -29,13 +32,16 @@ public class Clip extends FrameLayout {
 
 
     public void init(ImageView imView, EditText txtView) {
-        rLayoutWidth = 500;
-        rLayoutHeight = 500;
+        rLayoutWidth = Constants.CLIP_WIDTH;
+        rLayoutHeight = Constants.CLIP_HEIGHT;
+
         if (imView != null) {
             clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight);
         } else {
-            clipParams = new FrameLayout.LayoutParams(rLayoutWidth, 200);
+            rLayoutHeight = Constants.TEXT_CLIP_HEIGHT;
+            clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight);
         }
+        count = (float) rLayoutWidth / rLayoutHeight;
 
         this.setBackgroundColor(Color.TRANSPARENT);
         this.setLayoutParams(clipParams);
@@ -51,13 +57,12 @@ public class Clip extends FrameLayout {
         } else {
             FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             textV = txtView;
+            textV.setSingleLine(true);
             textV.setGravity(Gravity.CENTER);
             textV.setTextColor(Color.BLACK);
             textV.setTextSize(this.getLayoutParams().height / 6);
             textV.setBackgroundResource(R.drawable.stroke);
             textV.setLayoutParams(paramsExample);
-            //TODO change keyboard (into ok button)
-            /*textV.setInputType(DEFAULT_KEYS_DIALER);*/
             this.addView(txtView);
         }
 
@@ -65,15 +70,13 @@ public class Clip extends FrameLayout {
             borderP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             borderP.setMargins(25, 25, 25, 25);
             border = new ImageView(getContext());
-            //TODO set border drawable to image background
-            /*border.setBackgroundResource(R.drawable.stroke);*/
+            border.setBackgroundResource(R.drawable.stroke);
             border.setScaleType(ImageView.ScaleType.FIT_XY);
             border.setLayoutParams(borderP);
             this.addView(border);
-            this.invalidate();
         }
 
-        removBtnP = new FrameLayout.LayoutParams(50, 50);
+        removBtnP = new FrameLayout.LayoutParams(Constants.REMOVE_BUTTON_SIZE, Constants.REMOVE_BUTTON_SIZE);
         btnRemove = new ImageView(getContext());
         btnRemove.setBackgroundResource(R.drawable.handle_rotate_picsart_light);
         seTX = clipParams.width - removBtnP.width;
@@ -83,14 +86,13 @@ public class Clip extends FrameLayout {
         btnRemove.setLayoutParams(removBtnP);
         this.addView(btnRemove);
 
-        moveBtnp = new FrameLayout.LayoutParams(50, 50);
+        moveBtnp = new FrameLayout.LayoutParams(Constants.MOVE_BUTTON_SIZE, Constants.MOVE_BUTTON_SIZE);
         btnMove = new ImageView(getContext());
         btnMove.setBackgroundResource(R.drawable.handle_rotate_picsart_light);
         btnMove.setX(seTX);
         seTY = clipParams.height - removBtnP.height;
         btnMove.setY(seTY);
         btnMove.setLayoutParams(moveBtnp);
-        this.removeView(btnMove);
         this.addView(btnMove);
     }
 
@@ -118,10 +120,12 @@ public class Clip extends FrameLayout {
         return this.getHeight();
     }
 
+    public float getCount() {
+        return count;
+    }
 
-    public void refreshTextSize( int sizeH) {
+    public void refreshTextSize(int sizeH) {
         if (textV != null) {
-
             textV.setTextSize(sizeH / 6);
         }
     }
@@ -163,6 +167,7 @@ public class Clip extends FrameLayout {
             return null;
         }
     }
+
     public float getTextsize() {
         if (textV != null) {
             return textV.getTextSize();
@@ -170,6 +175,5 @@ public class Clip extends FrameLayout {
             return 0;
         }
     }
-
 
 }
