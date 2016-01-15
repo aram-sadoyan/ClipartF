@@ -9,21 +9,25 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     ClipView clipView;
     FrameLayout background;
-    ImageView imageClip;
+    ImageView imageClip, imagview;
     EditText editText;
     private ArrayList<ClipView> clips = new ArrayList<>();
+    String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         background = (FrameLayout) findViewById(R.id.backround);
+        imagview = (ImageView) findViewById(R.id.imageView);
 
         findViewById(R.id.button).setOnClickListener(dropClip);
         findViewById(R.id.button2).setOnClickListener(dropText);
@@ -34,11 +38,17 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener dropClip = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            imageClip = new ImageView(getApplicationContext());
             editText = new EditText(getApplicationContext());
-            imageClip.setImageResource(R.drawable.item1);
+
+            imageClip = new ImageView(getApplicationContext());
+
+            Glide.with(getApplicationContext())
+                    .load(gifUrl)
+                    .asGif()
+                    .into(imageClip);
+            /*imageClip.setImageResource(R.drawable.item1);*/
             editText = null;
-            clipView = new ClipView(getApplicationContext(), background,imageClip,editText);
+            clipView = new ClipView(getApplicationContext(), background, imageClip, editText);
             clips.add(clipView);
             clipView.setArray(clips);
             clipView.addClipToArraylist();
@@ -52,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
             editText = new EditText(getApplicationContext());
             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             editText.setText("");
-
-            clipView = new ClipView(getApplicationContext(), background,null,editText);
+            clipView = new ClipView(getApplicationContext(), background, null, editText);
             clips.add(clipView);
             clipView.setArray(clips);
             clipView.addClipToArraylist();
@@ -67,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             for (int i = 0; i < clips.size(); i++) {
-                float X = clips.get(i).clip.getX() + Constants.MARGIN/2;////margin
-                float Y = clips.get(i).clip.getY() + Constants.MARGIN/2;////margin
+                float X = clips.get(i).clip.getX() + Constants.MARGIN / 2;////margin
+                float Y = clips.get(i).clip.getY() + Constants.MARGIN / 2;////margin
                 if (clips.get(i).clip.getClipImage() != null) {
                     Log.d("clipParams", "getX = " + X + " getY =" + Y + " RotationAngel =" + clips.get(i).clip.getRotation() + " clipWidth= " + clips.get(i).clip.getLayoutParams().width + " clipHeight= " + clips.get(i).clip.getLayoutParams().height);
                 } else if (clips.get(i).clip.textV != null) {
