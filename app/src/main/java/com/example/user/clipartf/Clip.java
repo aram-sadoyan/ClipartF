@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
 
 public class Clip extends FrameLayout {
@@ -39,7 +40,7 @@ public class Clip extends FrameLayout {
             clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight);
         } else {
             rLayoutHeight = Constants.TEXT_CLIP_HEIGHT;
-            clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight);
+            clipParams = new FrameLayout.LayoutParams(rLayoutWidth/2, rLayoutHeight);
         }
         count = (float) rLayoutWidth / rLayoutHeight;
 
@@ -53,20 +54,21 @@ public class Clip extends FrameLayout {
             image = imView;
             image.setScaleType(ImageView.ScaleType.FIT_XY);
             image.setLayoutParams(imageP);
+
             this.addView(image);
         } else {
-            FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             textV = txtView;
             textV.setSingleLine(true);
-            textV.setGravity(Gravity.CENTER);
             textV.setTextColor(Color.BLACK);
             textV.setTextSize(this.getLayoutParams().height / 6);
-            textV.setBackgroundResource(R.drawable.stroke);
+            textV.setBackgroundColor(Color.TRANSPARENT);
             textV.setLayoutParams(paramsExample);
+            textV.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
             this.addView(txtView);
         }
 
-        if (imView != null) {
+
             borderP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             borderP.setMargins(25, 25, 25, 25);
             border = new ImageView(getContext());
@@ -74,7 +76,7 @@ public class Clip extends FrameLayout {
             border.setScaleType(ImageView.ScaleType.FIT_XY);
             border.setLayoutParams(borderP);
             this.addView(border);
-        }
+
 
         removBtnP = new FrameLayout.LayoutParams(Constants.REMOVE_BUTTON_SIZE, Constants.REMOVE_BUTTON_SIZE);
         btnRemove = new ImageView(getContext());
@@ -126,7 +128,9 @@ public class Clip extends FrameLayout {
 
     public void refreshTextSize(int sizeH) {
         if (textV != null) {
-            textV.setTextSize(sizeH / 6);
+
+            textV.setTextSize(sizeH / 8);
+            textV.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
         }
     }
 
@@ -147,9 +151,9 @@ public class Clip extends FrameLayout {
 
 
     public void hideShowBorder(int visibility) {
-        if (image != null) {
+       /* if (image != null) {*/
             border.setVisibility(visibility);
-        }
+       /* }*/
     }
 
     public View getClipImage() {
