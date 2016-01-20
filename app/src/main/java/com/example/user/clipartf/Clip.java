@@ -2,21 +2,25 @@ package com.example.user.clipartf;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
-
-public class Clip extends FrameLayout {
+public class Clip extends FrameLayout implements TextView.OnEditorActionListener {
 
     ImageView btnRemove, btnMove, border, image;
-    EditText textV;
+    /*EditText textV;*/
+    TextView textV;
+
     float count;
     FrameLayout.LayoutParams moveBtnp, borderP, imageP, clipParams;
 
@@ -26,21 +30,25 @@ public class Clip extends FrameLayout {
     double forTan = 0;
     float alfa = 0;
 
-    public Clip(Context context, ImageView imageView, EditText txtView) {
+    public Clip(Context context, ImageView imageView, /*EditText*/ TextView txtView) {
         super(context);
         init(imageView, txtView);
     }
 
 
-    public void init(ImageView imView, EditText txtView) {
-        rLayoutWidth = Constants.CLIP_WIDTH;
-        rLayoutHeight = Constants.CLIP_HEIGHT;
+    public void init(ImageView imView, /*EditText*/TextView txtView) {
+        /*rLayoutWidth = Constants.CLIP_WIDTH;
+        rLayoutHeight = Constants.CLIP_HEIGHT;*/
+        rLayoutWidth = (int) getContext().getResources().getDimension(R.dimen.CLIP_WIDTH);
+        rLayoutHeight = (int) getContext().getResources().getDimension(R.dimen.CLIP_HEIGHT);
 
         if (imView != null) {
             clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight);
         } else {
-            rLayoutHeight = Constants.TEXT_CLIP_HEIGHT;
-            clipParams = new FrameLayout.LayoutParams(rLayoutWidth/2, rLayoutHeight);
+            /*rLayoutHeight = Constants.TEXT_CLIP_HEIGHT;*/
+            rLayoutWidth = (int) getContext().getResources().getDimension(R.dimen.TEXT_CLIP_WIDTH);
+            rLayoutHeight = (int) getContext().getResources().getDimension(R.dimen.TEXT_CLIP_HEIGHT);
+            clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight /*rLayoutWidth*2/3*/);
         }
         count = (float) rLayoutWidth / rLayoutHeight;
 
@@ -54,20 +62,24 @@ public class Clip extends FrameLayout {
             image = imView;
             image.setScaleType(ImageView.ScaleType.FIT_XY);
             image.setLayoutParams(imageP);
-
             this.addView(image);
         } else {
             FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             textV = txtView;
-            textV.setSingleLine(true);
+            /*textV.setSingleLine(true);*/
             textV.setTextColor(Color.BLACK);
             textV.setTextSize(this.getLayoutParams().height / 6);
             textV.setBackgroundColor(Color.TRANSPARENT);
             textV.setLayoutParams(paramsExample);
-            textV.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+            textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            int maxLength = 50;
+            InputFilter[] fArray = new InputFilter[1];
+            fArray[0] = new InputFilter.LengthFilter(maxLength);
+            textV.setFilters(fArray);
+            textV.setOnEditorActionListener(Clip.this);
             this.addView(txtView);
+            this.invalidate();
         }
-
 
             borderP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             borderP.setMargins(25, 25, 25, 25);
@@ -128,8 +140,7 @@ public class Clip extends FrameLayout {
 
     public void refreshTextSize(int sizeH) {
         if (textV != null) {
-
-            textV.setTextSize(sizeH / 8);
+            textV.setTextSize(sizeH / 5);//was5
             textV.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
         }
     }
@@ -151,9 +162,7 @@ public class Clip extends FrameLayout {
 
 
     public void hideShowBorder(int visibility) {
-       /* if (image != null) {*/
             border.setVisibility(visibility);
-       /* }*/
     }
 
     public View getClipImage() {
@@ -180,4 +189,39 @@ public class Clip extends FrameLayout {
         }
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        Log.d("JJSJHD"," "+v.getText().length());
+
+        if (actionId == EditorInfo.IME_ACTION_NEXT) {
+            //Handle search key click
+            Log.d("JJSJHD","search");
+            return true;
+        }
+        if (actionId == EditorInfo.IME_FLAG_NO_ENTER_ACTION) {
+            //Handle go key click
+            Log.d("JJSJHD","GO");
+            return true;
+        }
+        return false;
+    }
+}
+
+class Listener implements TextView.OnEditorActionListener{
+
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            //Handle search key click
+            return true;
+        }
+        if (actionId == EditorInfo.IME_ACTION_GO) {
+            //Handle go key click
+            return true;
+        }
+
+
+        return false;
+    }
 }

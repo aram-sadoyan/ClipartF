@@ -2,4 +2,19 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+
+    <dimen name="CLIP_WIDTH">200dp</dimen>
+    <dimen name="CLIP_HEIGHT">200dp</dimen>
+    <dimen name="TEXT_CLIP_WIDTH">200dp</dimen>
+    <dimen name="TEXT_CLIP_HEIGHT">100dp</dimen>
+
+
+
+
+
+    public static final int TEXT_CLIP_HEIGHT = 250;//was200
+    public static final int REMOVE_BUTTON_SIZE = 50;
+    public static final int MOVE_BUTTON_SIZE = 50;
+    public static final int MARGIN = 50;
 </resources>
