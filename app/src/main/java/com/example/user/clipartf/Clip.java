@@ -1,9 +1,14 @@
 package com.example.user.clipartf;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.os.Build;
 import android.text.InputFilter;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,8 +19,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
 
-public class Clip extends FrameLayout implements TextView.OnEditorActionListener {
+
+public class Clip extends FrameLayout {
 
     ImageView btnRemove, btnMove, border, image;
     /*EditText textV;*/
@@ -48,7 +55,7 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
             /*rLayoutHeight = Constants.TEXT_CLIP_HEIGHT;*/
             rLayoutWidth = (int) getContext().getResources().getDimension(R.dimen.TEXT_CLIP_WIDTH);
             rLayoutHeight = (int) getContext().getResources().getDimension(R.dimen.TEXT_CLIP_HEIGHT);
-            clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight /*rLayoutWidth*2/3*/);
+            clipParams = new FrameLayout.LayoutParams(rLayoutWidth,rLayoutHeight);
         }
         count = (float) rLayoutWidth / rLayoutHeight;
 
@@ -57,6 +64,7 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
 
         if (imView != null) {
             imageP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            /*int margin = (int) getContext().getResources().getDimension(R.dimen.MARGIN);*/
             imageP.setMargins(25, 25, 25, 25);
             image = new ImageView(getContext());
             image = imView;
@@ -64,33 +72,34 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
             image.setLayoutParams(imageP);
             this.addView(image);
         } else {
+
             FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             textV = txtView;
-            /*textV.setSingleLine(true);*/
+            textV.setSingleLine(true);
             textV.setTextColor(Color.BLACK);
-            textV.setTextSize(this.getLayoutParams().height / 6);
-            textV.setBackgroundColor(Color.TRANSPARENT);
+            textV.setTextSize(TypedValue.COMPLEX_UNIT_SP,28);//was30
+            textV.setBackgroundColor(Color.GRAY);
             textV.setLayoutParams(paramsExample);
+            textV.setText("3");
             textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
             int maxLength = 50;
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(maxLength);
             textV.setFilters(fArray);
-            textV.setOnEditorActionListener(Clip.this);
             this.addView(txtView);
             this.invalidate();
         }
 
-            borderP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            borderP.setMargins(25, 25, 25, 25);
-            border = new ImageView(getContext());
-            border.setBackgroundResource(R.drawable.stroke);
-            border.setScaleType(ImageView.ScaleType.FIT_XY);
-            border.setLayoutParams(borderP);
-            this.addView(border);
+        borderP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        borderP.setMargins(25, 25, 25, 25);
+        border = new ImageView(getContext());
+        border.setBackgroundResource(R.drawable.stroke);
+        border.setScaleType(ImageView.ScaleType.FIT_XY);
+        border.setLayoutParams(borderP);
+        /*this.addView(border);*/
+        int buttonsize = (int) getContext().getResources().getDimension(R.dimen.BUTTON_SIZE);
 
-
-        removBtnP = new FrameLayout.LayoutParams(Constants.REMOVE_BUTTON_SIZE, Constants.REMOVE_BUTTON_SIZE);
+        removBtnP = new FrameLayout.LayoutParams(buttonsize, buttonsize);
         btnRemove = new ImageView(getContext());
         btnRemove.setBackgroundResource(R.drawable.handle_rotate_picsart_light);
         seTX = clipParams.width - removBtnP.width;
@@ -100,7 +109,7 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
         btnRemove.setLayoutParams(removBtnP);
         this.addView(btnRemove);
 
-        moveBtnp = new FrameLayout.LayoutParams(Constants.MOVE_BUTTON_SIZE, Constants.MOVE_BUTTON_SIZE);
+        moveBtnp = new FrameLayout.LayoutParams(buttonsize, buttonsize);
         btnMove = new ImageView(getContext());
         btnMove.setBackgroundResource(R.drawable.handle_rotate_picsart_light);
         btnMove.setX(seTX);
@@ -141,7 +150,7 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
     public void refreshTextSize(int sizeH) {
         if (textV != null) {
             textV.setTextSize(sizeH / 5);//was5
-            textV.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+            /*textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);*/
         }
     }
 
@@ -162,7 +171,7 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
 
 
     public void hideShowBorder(int visibility) {
-            border.setVisibility(visibility);
+        border.setVisibility(visibility);
     }
 
     public View getClipImage() {
@@ -189,39 +198,6 @@ public class Clip extends FrameLayout implements TextView.OnEditorActionListener
         }
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        Log.d("JJSJHD"," "+v.getText().length());
 
-        if (actionId == EditorInfo.IME_ACTION_NEXT) {
-            //Handle search key click
-            Log.d("JJSJHD","search");
-            return true;
-        }
-        if (actionId == EditorInfo.IME_FLAG_NO_ENTER_ACTION) {
-            //Handle go key click
-            Log.d("JJSJHD","GO");
-            return true;
-        }
-        return false;
-    }
 }
 
-class Listener implements TextView.OnEditorActionListener{
-
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            //Handle search key click
-            return true;
-        }
-        if (actionId == EditorInfo.IME_ACTION_GO) {
-            //Handle go key click
-            return true;
-        }
-
-
-        return false;
-    }
-}

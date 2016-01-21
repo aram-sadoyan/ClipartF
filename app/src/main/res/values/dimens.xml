@@ -1,14 +1,14 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
+    <!--<dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>-->
 
     <dimen name="CLIP_WIDTH">200dp</dimen>
     <dimen name="CLIP_HEIGHT">200dp</dimen>
-    <dimen name="TEXT_CLIP_WIDTH">200dp</dimen>
-    <dimen name="TEXT_CLIP_HEIGHT">100dp</dimen>
-
+    <dimen name="TEXT_CLIP_WIDTH">120dp</dimen>
+    <dimen name="TEXT_CLIP_HEIGHT">60dp</dimen>
+    <dimen name="BUTTON_SIZE">20dp</dimen>
+    <dimen name="MOVEBTN_RECT_SIZE">20dp</dimen>
 
 
 

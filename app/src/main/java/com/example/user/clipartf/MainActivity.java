@@ -1,9 +1,14 @@
 package com.example.user.clipartf;
 
+import android.graphics.Point;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ClipView> clips = new ArrayList<>();
     String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         background = (FrameLayout) findViewById(R.id.backround);
         imagview = (ImageView) findViewById(R.id.imageView);
+
 
         findViewById(R.id.button).setOnClickListener(dropClip);
         findViewById(R.id.button2).setOnClickListener(dropText);
@@ -41,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener dropClip = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            editText = new EditText(getApplicationContext());
+            /*editText = new EditText(getApplicationContext());*/
             imageClip = new ImageView(getApplicationContext());
             Glide.with(getApplicationContext())
                     .load(gifUrl)
@@ -62,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             editText = new EditText(getApplicationContext());
-            /*editText.setImeOptions(EditorInfo.IME_ACTION_DONE);*////repeat
-            editText.setText("");
             clipView = new ClipView(getApplicationContext(), background, null, editText);
             clips.add(clipView);
             clipView.setArray(clips);
