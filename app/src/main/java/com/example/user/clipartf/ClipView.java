@@ -114,7 +114,7 @@ public class ClipView extends FrameLayout {
                     moveBt.setLayoutParams(moveBt.getLayoutParams());
                     background.invalidate();
                     moveBt.invalidate();*/
-
+///scjsc
                     fixMoveButton(true);
                 }
 
