@@ -9,6 +9,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
     ClipView clipView;
     FrameLayout background;
     ImageView imageClip, imagview;
-    /*EditText editText;*/
-    TextView editText;
+    EditText editText;
+    /*TextView editText;*/
     private ArrayList<ClipView> clips = new ArrayList<>();
     String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
 
@@ -36,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
         background = (FrameLayout) findViewById(R.id.backround);
         imagview = (ImageView) findViewById(R.id.imageView);
-
 
         findViewById(R.id.button).setOnClickListener(dropClip);
         findViewById(R.id.button2).setOnClickListener(dropText);

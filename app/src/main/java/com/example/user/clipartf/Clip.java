@@ -26,7 +26,7 @@ public class Clip extends FrameLayout {
 
     ImageView btnRemove, btnMove, border, image;
     /*EditText textV;*/
-    TextView textV;
+    EditText textV;
 
     float count;
     FrameLayout.LayoutParams moveBtnp, borderP, imageP, clipParams;
@@ -37,13 +37,13 @@ public class Clip extends FrameLayout {
     double forTan = 0;
     float alfa = 0;
 
-    public Clip(Context context, ImageView imageView, /*EditText*/ TextView txtView) {
+    public Clip(Context context, ImageView imageView, EditText /*TextView*/ txtView) {
         super(context);
         init(imageView, txtView);
     }
 
 
-    public void init(ImageView imView, /*EditText*/TextView txtView) {
+    public void init(ImageView imView, EditText/*TextView */txtView) {
         /*rLayoutWidth = Constants.CLIP_WIDTH;
         rLayoutHeight = Constants.CLIP_HEIGHT;*/
         rLayoutWidth = (int) getContext().getResources().getDimension(R.dimen.CLIP_WIDTH);
@@ -75,12 +75,12 @@ public class Clip extends FrameLayout {
 
             FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             textV = txtView;
-            textV.setSingleLine(true);
+            /*textV.setSingleLine(true);*/
             textV.setTextColor(Color.BLACK);
-            textV.setTextSize(TypedValue.COMPLEX_UNIT_SP,28);//was30
+            textV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);//was30
             textV.setBackgroundColor(Color.GRAY);
             textV.setLayoutParams(paramsExample);
-            textV.setText("3");
+
             textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
             int maxLength = 50;
             InputFilter[] fArray = new InputFilter[1];
@@ -96,7 +96,7 @@ public class Clip extends FrameLayout {
         border.setBackgroundResource(R.drawable.stroke);
         border.setScaleType(ImageView.ScaleType.FIT_XY);
         border.setLayoutParams(borderP);
-        /*this.addView(border);*/
+        this.addView(border);
         int buttonsize = (int) getContext().getResources().getDimension(R.dimen.BUTTON_SIZE);
 
         removBtnP = new FrameLayout.LayoutParams(buttonsize, buttonsize);
@@ -178,7 +178,7 @@ public class Clip extends FrameLayout {
         return image;
     }
 
-    public View getTextView() {
+    public EditText getTextView() {
         return textV;
     }
 
