@@ -82,7 +82,7 @@ public class Clip extends FrameLayout {
             textV.setLayoutParams(paramsExample);
 
             textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-            int maxLength = 50;
+            int maxLength = 25;
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(maxLength);
             textV.setFilters(fArray);

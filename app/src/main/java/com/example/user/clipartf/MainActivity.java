@@ -87,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < clips.size(); i++) {
                 float X = clips.get(i).clip.getX() + Constants.MARGIN / 2;////margin
                 float Y = clips.get(i).clip.getY() + Constants.MARGIN / 2;////margin
+
+                float xForText = clips.get(i).clip.getX() + Constants.MARGIN / 2;////margin
+                float yForText = clips.get(i).clip.getY() + Constants.MARGIN / 2;////margin
+
                 if (clips.get(i).clip.getClipImage() != null) {
                     Log.d("clipParams", "getX = " + X + " getY =" + Y + " RotationAngel =" + clips.get(i).clip.getRotation() + " clipWidth= " + clips.get(i).clip.getLayoutParams().width + " clipHeight= " + clips.get(i).clip.getLayoutParams().height);
                 } else if (clips.get(i).clip.textV != null) {
@@ -95,5 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+
 
 }
