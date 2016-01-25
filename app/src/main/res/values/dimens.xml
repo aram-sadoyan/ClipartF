@@ -9,12 +9,6 @@
     <dimen name="TEXT_CLIP_HEIGHT">60dp</dimen>
     <dimen name="BUTTON_SIZE">20dp</dimen>
     <dimen name="MOVEBTN_RECT_SIZE">25dp</dimen>
+    <dimen name="MARGIN">10dp</dimen>
 
-
-
-
-    public static final int TEXT_CLIP_HEIGHT = 250;//was200
-    public static final int REMOVE_BUTTON_SIZE = 50;
-    public static final int MOVE_BUTTON_SIZE = 50;
-    public static final int MARGIN = 50;
 </resources>

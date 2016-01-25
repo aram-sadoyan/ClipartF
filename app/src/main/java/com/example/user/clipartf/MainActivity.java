@@ -42,22 +42,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(dropText);
         findViewById(R.id.button3).setOnClickListener(checkParams);
 
-
     }
 
     View.OnClickListener dropClip = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            /*editText = new EditText(getApplicationContext());*/
             imageClip = new ImageView(getApplicationContext());
             Glide.with(getApplicationContext())
                     .load(gifUrl)
                     .asGif()
                     .into(imageClip);
-            /*imageClip.setImageResource(R.drawable.item1);*/
-
-            editText = null;
-            clipView = new ClipView(getApplicationContext(), background, imageClip, editText);
+            clipView = new ClipView(getApplicationContext(), background, imageClip, null);
             clips.add(clipView);
             clipView.setArray(clips);
             clipView.addClipToArraylist();
@@ -67,17 +62,13 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener dropText = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             editText = new EditText(getApplicationContext());
             clipView = new ClipView(getApplicationContext(), background, null, editText);
             clips.add(clipView);
             clipView.setArray(clips);
             clipView.addClipToArraylist();
-
         }
     };
-
-
 
 
     View.OnClickListener checkParams = new View.OnClickListener() {
@@ -99,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
 
 
 }
