@@ -1,21 +1,18 @@
 package com.example.user.clipartf;
 
-import android.graphics.Point;
-import android.os.Build;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -51,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             Glide.with(getApplicationContext())
                     .load(gifUrl)
                     .asGif()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(imageClip);
             clipView = new ClipView(getApplicationContext(), background, imageClip, null);
             clips.add(clipView);
@@ -78,10 +76,8 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < clips.size(); i++) {
                 float X = clips.get(i).clip.getX() + Constants.MARGIN / 2;////margin
                 float Y = clips.get(i).clip.getY() + Constants.MARGIN / 2;////margin
-
                 float xForText = clips.get(i).clip.getX() + Constants.MARGIN / 2;////margin
                 float yForText = clips.get(i).clip.getY() + Constants.MARGIN / 2;////margin
-
                 if (clips.get(i).clip.getClipImage() != null) {
                     Log.d("clipParams", "getX = " + X + " getY =" + Y + " RotationAngel =" + clips.get(i).clip.getRotation() + " clipWidth= " + clips.get(i).clip.getLayoutParams().width + " clipHeight= " + clips.get(i).clip.getLayoutParams().height);
                 } else if (clips.get(i).clip.textV != null) {

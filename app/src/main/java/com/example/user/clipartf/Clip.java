@@ -53,7 +53,7 @@ public class Clip extends FrameLayout {
         } else {
             rLayoutWidth = (int) getContext().getResources().getDimension(R.dimen.TEXT_CLIP_WIDTH);
             rLayoutHeight = (int) getContext().getResources().getDimension(R.dimen.TEXT_CLIP_HEIGHT);
-            clipParams = new FrameLayout.LayoutParams(rLayoutWidth,rLayoutHeight);
+            clipParams = new FrameLayout.LayoutParams(rLayoutWidth, rLayoutHeight);
         }
         count = (float) rLayoutWidth / rLayoutHeight;
 
@@ -62,22 +62,21 @@ public class Clip extends FrameLayout {
 
         if (imView != null) {
             imageP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            imageP.setMargins(margin, margin, margin, margin);//////?
+            imageP.setMargins(margin, margin, margin, margin);
             image = new ImageView(getContext());
             image = imView;
             image.setScaleType(ImageView.ScaleType.FIT_XY);
             image.setLayoutParams(imageP);
             this.addView(image);
         } else {
-
             FrameLayout.LayoutParams paramsExample = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             textV = txtView;
-            /*textV.setSingleLine(true);*/
             textV.setTextColor(Color.BLACK);
-            textV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);//was30
-            textV.setBackgroundColor(Color.GRAY);
+            textV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            textV.setBackgroundColor(Color.TRANSPARENT);
             textV.setLayoutParams(paramsExample);
             textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+            textV.setPadding(10, 0, 10, 0);
             int maxLength = 25;
             InputFilter[] fArray = new InputFilter[1];
             fArray[0] = new InputFilter.LengthFilter(maxLength);
@@ -87,7 +86,6 @@ public class Clip extends FrameLayout {
         }
 
         borderP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         borderP.setMargins(margin, margin, margin, margin);
         border = new ImageView(getContext());
         border.setBackgroundResource(R.drawable.stroke);
@@ -146,8 +144,10 @@ public class Clip extends FrameLayout {
 
     public void refreshTextSize(int sizeH) {
         if (textV != null) {
-            textV.setTextSize(sizeH / 6);//was5
-            /*textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);*/
+
+            int textsize = sizeH / 2;
+            textV.setTextSize(TypedValue.COMPLEX_UNIT_PX, textsize);//was5
+            textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         }
     }
 
