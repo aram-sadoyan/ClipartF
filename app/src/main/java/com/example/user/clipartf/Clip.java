@@ -57,7 +57,7 @@ public class Clip extends FrameLayout {
         }
         count = (float) rLayoutWidth / rLayoutHeight;
 
-        this.setBackgroundColor(Color.TRANSPARENT);
+        this.setBackgroundColor(Color.GRAY);////////
         this.setLayoutParams(clipParams);
 
         if (imView != null) {
@@ -144,7 +144,6 @@ public class Clip extends FrameLayout {
 
     public void refreshTextSize(int sizeH) {
         if (textV != null) {
-
             int textsize = sizeH / 2;
             textV.setTextSize(TypedValue.COMPLEX_UNIT_PX, textsize);//was5
             textV.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);

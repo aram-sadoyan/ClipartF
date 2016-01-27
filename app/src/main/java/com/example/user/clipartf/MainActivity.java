@@ -4,7 +4,6 @@ package com.example.user.clipartf;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -22,9 +20,11 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout background;
     ImageView imageClip, imagview;
     EditText editText;
-    /*TextView editText;*/
     private ArrayList<ClipView> clips = new ArrayList<>();
     String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
+    String gifUrl2 = "https://media3.giphy.com/media/5ELFnK86mtFDO/200.gif";
+    String gifUrl3 = "https://media4.giphy.com/media/11ruYKqYRD6FrO/200_s.gif";
+
 
 
     @Override
@@ -46,9 +46,8 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             imageClip = new ImageView(getApplicationContext());
             Glide.with(getApplicationContext())
-                    .load(gifUrl)
+                    .load(gifUrl2)
                     .asGif()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(imageClip);
             clipView = new ClipView(getApplicationContext(), background, imageClip, null);
             clips.add(clipView);
