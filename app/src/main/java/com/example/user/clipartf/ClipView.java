@@ -14,12 +14,15 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -33,8 +36,8 @@ public class ClipView extends FrameLayout {
     FrameLayout background;
     ImageView moveBt;
     View rect;
-    RectF rectFordetection, rectForRemoving;
-
+    RectF rectFordetection, rectForRemoving, rectForTextView;
+    String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
     FrameLayout.LayoutParams btnParams, clipMoveAndRotateRelParams, rectParams;
     private float _xDelta;
     private float _xDeltaforMove;
@@ -47,12 +50,10 @@ public class ClipView extends FrameLayout {
     boolean allowToZoomFromSizeBlock = false;
     boolean continueMovingOnePoint = false;
     boolean keyboardIsOpened = false;
-    /*boolean allowKeybOpen = true;*/
 
     private float degress;
     private float degres = 0, degres2 = 0, degres3 = 0, degresFinal, alfa1 = 0, degresAfterMultyTouch = 0;
 
-    int countt = 0;
     float count = 0;
 
     ImageView imageClip, removeBtn;
@@ -88,6 +89,7 @@ public class ClipView extends FrameLayout {
         moveBt.setLayoutParams(btnParams);
         moveBt.setOnTouchListener(moveBtTouch);
         background.setOnClickListener(onClipTouchclick);
+        background.setBackgroundColor(Color.TRANSPARENT);
         rect = new ImageButton(context);
         count = clip.getCount();
         if (istText) {
@@ -101,7 +103,6 @@ public class ClipView extends FrameLayout {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-
                     txtView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
                     fixMoveButton();
                 }
@@ -115,7 +116,6 @@ public class ClipView extends FrameLayout {
                   /*  if(s.length() != 0){
                          chr = s.charAt(s.length()-1);
                     }
-
                     if (chr == 'w') {
                         sizeCount *= 2;
                     }*/
@@ -161,6 +161,7 @@ public class ClipView extends FrameLayout {
     View.OnClickListener onClipTouchclick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.d("ytrre", "on");
             clearKeyboard();
             hideShowBorders2(View.INVISIBLE, false);
             listenerSwitcher(clip, VISIBLE, false);
@@ -193,7 +194,7 @@ public class ClipView extends FrameLayout {
         float YOnePoint = 0;
 
         Point checker = new Point();
-        PointF deltaPoint = new PointF();
+        /*PointF deltaPoint = new PointF();*/
         PointF startPointer0 = new PointF();
         PointF startPointer1 = new PointF();
         Point deltaP0 = new Point();
@@ -206,23 +207,10 @@ public class ClipView extends FrameLayout {
         PointF forOnePoint1index = new PointF();
         PointF deltaForOnePointers = new PointF();
 
-
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (istText && allowToChange) {
-                laPrmsForRect = (FrameLayout.LayoutParams) rect.getLayoutParams();
-                laPrmsForRect.height = clip.getLayoutParams().width;
-                laPrmsForRect.width = rect.getLayoutParams().width;
-                rect.setY(clip.getY() - rect.getLayoutParams().height / 4);
-                rect.setX(clip.getX() /*- rect.getLayoutParams().width / 8*/);
-                rect.setLayoutParams(laPrmsForRect);
-                rect.invalidate();
-                background.invalidate();
-                background.requestFocus();
-                background.requestLayout();
-                clip.invalidate();
-                clip.requestFocus();
-                clip.requestLayout();
+                fixRectForTextView();
                 allowToChange = false;
             }
             X = (int) event.getRawX();
@@ -235,7 +223,6 @@ public class ClipView extends FrameLayout {
                     listenerSwitcher(clip, GONE, true);
                     hideShowBorders(clip);
                     clip.getBtnRemove().setOnClickListener(null);
-
                     rect.setRotation(0);
                     allowMove = true;
                     setrectForDetectionX_Y();
@@ -243,8 +230,8 @@ public class ClipView extends FrameLayout {
                         ////
                         firstCheckForRemove = true;
                     }
-                    fixMoveButton();
-                    clip.invalidate();
+                    /*fixMoveButton();*/
+                    /*clip.invalidate();*/
                     /////one tuch
                     if (event.getPointerCount() < 2) {
                         dimens = clip.getLayoutParams().width;
@@ -256,10 +243,9 @@ public class ClipView extends FrameLayout {
                         _yDeltaforMove = _yDelta;
                         checker.x = (int) event.getRawX();
                         checker.y = (int) event.getRawY();
-
                     }
-                    deltaPoint.x = clip.getLayoutParams().width - moveBt.getLayoutParams().width;
-                    deltaPoint.y = clip.getLayoutParams().height - moveBt.getLayoutParams().height;
+                /*    deltaPoint.x = clip.getLayoutParams().width - moveBt.getLayoutParams().width;
+                    deltaPoint.y = clip.getLayoutParams().height - moveBt.getLayoutParams().height;*/
                     break;
                 case MotionEvent.ACTION_MOVE:
                     fixMoveButton();
@@ -268,30 +254,26 @@ public class ClipView extends FrameLayout {
                         clip.invalidate();
                         if (event.getPointerCount() <= 1) {
                             /////////////////  One Point ///////////
-
                             if (!continueMovingOnePoint) {
-                                Log.d("cvvbgnunmu","first "+ X + " " + Y);
                                 FrameLayout.LayoutParams layoutParams5 = (FrameLayout.LayoutParams) clip.getLayoutParams();
-                                layoutParams5.leftMargin = (int)(X - _xDelta);
+                                layoutParams5.leftMargin = (int) (X - _xDelta);
                                 layoutParams5.topMargin = (int) (Y - _yDelta);
                                 clip.setLayoutParams(layoutParams5);
+                                /*if(istText){fixRectForTextView();}else{fixRect();}*/
                                 fixRect();
                                 //TODO fix rect for textView
                                 rect.setRotation(0);
                             } else {
-                                ////TODO
-                                Log.d("cvvbgnunmu","secnd " + XOnePoint + " " + YOnePoint);
                                 FrameLayout.LayoutParams layoutParams6 = (FrameLayout.LayoutParams) clip.getLayoutParams();
                                 layoutParams6.leftMargin = (int) (X - _xDeltaOnePoint);
-                                layoutParams6.topMargin = (int) (Y  - _yDeltaOnePoint);
+                                layoutParams6.topMargin = (int) (Y - _yDeltaOnePoint);
                                 clip.setLayoutParams(layoutParams6);
+                                /*if(istText){fixRectForTextView();}else{fixRect();}*/
                                 fixRect();
                                 rect.setRotation(0);
                             }
-
                         } else if (event.getPointerCount() >= 2) {
                             /////////////////  Two Points ///////////
-
                             if (istText) {
                                 chekSize = 600;
                             } else {
@@ -302,7 +284,6 @@ public class ClipView extends FrameLayout {
                             deltaPointerD = (int) (dimens + (actualDistanceForPointer - initialDistance));////??
                            /* degres3 = (int) Math.toDegrees(Math.atan2(event.getY(1) - event.getY(0), event.getX(1) - event.getX(0)) - Math.atan2(startPointer1.y - startPointer0.y, startPointer1.x - startPointer0.x))*/
                             degres2 = (int) Math.toDegrees(Math.atan2(event.getY(0) - event.getY(1), event.getX(0) - event.getX(1)) - Math.atan2(startPointer0.y - startPointer1.y, startPointer0.x - startPointer1.x));
-
                             if (!movedFromMultitouch) {
                                 moved = false;
                                 clip.setLayoutParams(clip.getLayoutParams());
@@ -324,7 +305,7 @@ public class ClipView extends FrameLayout {
 
                             if (startPointer0.y < startPointer1.y) {
                                 zoomHeight = (int) (deltaPointerD / count);
-                                if (zoomHeight < chekSize && zoomHeight > chekSize / 8) {
+                                if (zoomHeight < chekSize && zoomHeight > chekSize / 10) {
                                     /*int deltaPointerNow = (int) deltaPointerD;*/
                                     int beforeW = clip.getLayoutParams().width;
                                     int beforeH = clip.getLayoutParams().height;
@@ -354,7 +335,6 @@ public class ClipView extends FrameLayout {
                                     layoutParams5.topMargin = (int) (point0.y - _yDeltaforMove);
                                     clip.setLayoutParams(layoutParams5);
                                 }
-
                                 actualClipWidth = clip.getLayoutParams().width;
                                 actualClipHeight = clip.getLayoutParams().height;
                                 deltaClipwidth = actualClipWidth - initialClipWidth;
@@ -362,15 +342,13 @@ public class ClipView extends FrameLayout {
 
                             } else if (startPointer0.y >= startPointer1.y) {
                                 zoomHeight = (int) (deltaPointerD / count);
-                                if (zoomHeight < chekSize && zoomHeight > chekSize / 8) {
+                                if (zoomHeight < chekSize && zoomHeight > chekSize / 10) {
                                     if (istText) {
                                         count = clip.getLayoutParams().width / clip.getLayoutParams().height;
                                     }
                                     clip.getLayoutParams().width = deltaPointerD;
                                     clip.getLayoutParams().height = (int) (deltaPointerD / count);
-
                                 }
-
                                 actualClipWidth = clip.getLayoutParams().width;
                                 actualClipHeight = clip.getLayoutParams().height;
                                 deltaClipwidth = actualClipWidth - initialClipWidth;
@@ -395,7 +373,6 @@ public class ClipView extends FrameLayout {
                                 _xDeltaforMove = point0.x - lParams.leftMargin;
                                 _yDeltaforMove = point0.y - lParams.topMargin;*/
                             }
-
                             initialP0.x = event.getX(0);
                             initialP0.y = event.getY(0);
                             initialP1.x = event.getX(1);
@@ -425,10 +402,17 @@ public class ClipView extends FrameLayout {
                         firstCheckForRemove = false;
                         allowToCloseKeyboard = false;
                     }
+
+                    clip.refreshBtn(clip.getLayoutParams().width, clip.getLayoutParams().height);
+                    setrectForDetectionX_Y();
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
+                    dimens = clip.getLayoutParams().width;/////new
                     clearKeyboard();
                     if (istText) {
+                        if (rectFordetection.contains(event.getX(1), event.getY(1))) {
+                            allowMove = false;
+                        }else{allowMove = true;}
                         txtView.setSingleLine(false);
                     }
                     firstCheckForRemove = false;
@@ -451,25 +435,35 @@ public class ClipView extends FrameLayout {
                     if (!rectFordetection.contains(startPointer1.x + rect.getX(), startPointer1.y + rect.getY())) {
                         allowMove = false;
                         if (istText) {/////???
-                            allowMove = false;
+                            allowMove = true;
                         }
                     }
                     initialDistance = (int) Math.hypot(event.getX(1) - event.getX(0), event.getY(1) - event.getY(0));
                     allowToCloseKeyboard = false;
-
+                    continueMovingOnePoint = false;
 
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
+                    fixRect();
+                   /* if (istText) {
+                        ViewGroup.LayoutParams laPrmsForRect = (FrameLayout.LayoutParams) rect.getLayoutParams();
+                        laPrmsForRect.height = clip.getLayoutParams().width;
+                        laPrmsForRect.width = rect.getLayoutParams().width;
+                        rect.setY(clip.getY() - rect.getLayoutParams().height / 4);
+                        rect.setX(clip.getX() *//*- rect.getLayoutParams().width / 8*//*);
+                        rect.setLayoutParams(laPrmsForRect);
+                    }*/
                     degresAfterMultyTouch = clip.getRotation();
                     movedFromMultitouch = true;
                     allowMove = true;///was false
-
-                    deltaForOnePointers.set(forOnePoint1index.x-forOnePoint0index.x,forOnePoint1index.y-forOnePoint0index.y);
-                    FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) clip.getLayoutParams();
-                    _xDeltaOnePoint = X - lParams.leftMargin+deltaForOnePointers.x;
-                    _yDeltaOnePoint = Y - lParams.topMargin+deltaForOnePointers.y;
-                    continueMovingOnePoint = true;
-
+                    if (event.getActionIndex() == 0) {
+                        deltaForOnePointers.set(forOnePoint1index.x - forOnePoint0index.x, forOnePoint1index.y - forOnePoint0index.y);
+                        FrameLayout.LayoutParams lParams = (FrameLayout.LayoutParams) clip.getLayoutParams();
+                        _xDeltaOnePoint = X - lParams.leftMargin + deltaForOnePointers.x;
+                        _yDeltaOnePoint = Y - lParams.topMargin + deltaForOnePointers.y;
+                        continueMovingOnePoint = true;
+                    }
+                    setrectForDetectionX_Y();////////////
                     break;
                 case MotionEvent.ACTION_UP:
                     if (event.getPointerCount() == 1) {
@@ -488,7 +482,6 @@ public class ClipView extends FrameLayout {
                     allowMove = false;
                     degresAfterMultyTouch = clip.getRotation();
                     movedFromMultitouch = true;
-
                     if (istText && allowToCloseKeyboard) {
                         removeBtn = new ImageView(context);
                         removeBtn = clip.getBtnRemove();
@@ -499,33 +492,20 @@ public class ClipView extends FrameLayout {
                     allowToChange = true;
                     clip.invalidate();
                     continueMovingOnePoint = false;
+                   /* if (istText) {
+                        ViewGroup.LayoutParams laPrmsForRect = (FrameLayout.LayoutParams) rect.getLayoutParams();
+                        laPrmsForRect.height = clip.getLayoutParams().width;
+                        laPrmsForRect.width = rect.getLayoutParams().width;
+                        rect.setY(clip.getY() - rect.getLayoutParams().height / 4);
+                        rect.setX(clip.getX() *//*- rect.getLayoutParams().width / 8*//*);
+                        rect.setLayoutParams(laPrmsForRect);
+                    }*/
                     break;
             }
             return false;
         }
     };
 
-
-    OnTouchListener txtTouch = new OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            txtView.setCursorVisible(false);
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    break;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    break;
-                case MotionEvent.ACTION_POINTER_UP:
-                    break;
-                case MotionEvent.ACTION_UP:
-                    /*txtView.clearFocus();*/
-                    break;
-            }
-            return false;
-        }
-    };
 
     OnClickListener txtClick = new OnClickListener() {
         @Override
@@ -537,7 +517,6 @@ public class ClipView extends FrameLayout {
             txtView.setOnKeyListener(onKeyDown);
             txtView.requestFocus();
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-
             imm.showSoftInput(txtView, InputMethodManager.SHOW_IMPLICIT);
 
         }
@@ -554,15 +533,12 @@ public class ClipView extends FrameLayout {
         }
     };
 
-
     public void drop() {
         int MOVEBTN_RECT_SIZE = (int) getContext().getResources().getDimension(R.dimen.MOVEBTN_RECT_SIZE);
         clipMoveAndRotateRelParams = new FrameLayout.LayoutParams(/*70*/MOVEBTN_RECT_SIZE, MOVEBTN_RECT_SIZE);///button-size+margin
-        moveBt.setBackgroundColor(Color.TRANSPARENT);
-        /*moveBt.setX(clip.getX() + clip.getLayoutParams().width - moveBt.getLayoutParams().width/2);
-        moveBt.setY(clip.getY() + clip.getLayoutParams().height - moveBt.getLayoutParams().height/2);*/
-        moveBt.setX(clip.getX() + clip.getLayoutParams().width - MOVEBTN_RECT_SIZE/*-clipMoveAndRotateRelParams.width*/);
-        moveBt.setY(clip.getY() + clip.getLayoutParams().height - MOVEBTN_RECT_SIZE /*- clipMoveAndRotateRelParams.height*/);
+        moveBt.setBackgroundColor(Color.GREEN);
+        moveBt.setX(clip.getX() + clip.getLayoutParams().width - MOVEBTN_RECT_SIZE);
+        moveBt.setY(clip.getY() + clip.getLayoutParams().height - MOVEBTN_RECT_SIZE);
         moveBt.setLayoutParams(clipMoveAndRotateRelParams);
         alfa1 = clip.getAlfa();
 
@@ -573,16 +549,16 @@ public class ClipView extends FrameLayout {
         rect.setLayoutParams(rectParams);
         background.addView(rect);
         if (istText) {
-            txtView.setOnTouchListener(txtTouch);
             txtView.setOnClickListener(txtClick);
         }
         background.addView(moveBt);
         rect.setOnTouchListener(rectTouch);
         hideShowBorders2(GONE, true);
-        moveBt.setVisibility(VISIBLE);
+        /*moveBt.setVisibility(VISIBLE);*/
         clip.setTranslationX(250);
         clip.setTranslationY(250);
         fixRect();
+        moveBt.setVisibility(GONE);
         fixMoveButton();
 
     }
@@ -642,7 +618,7 @@ public class ClipView extends FrameLayout {
                     } else {
                         chekSize = 1600;
                     }
-                    if (hd < chekSize /*&& hd > chekSize / 8*/) {
+                    if (hd < chekSize && hd > chekSize / 10) {
                         clip.getLayoutParams().width = wd;
                         clip.getLayoutParams().height = hd;
 
@@ -679,6 +655,14 @@ public class ClipView extends FrameLayout {
                     moved = true;
                     fixRect();
                     fixMoveButton();
+                    if (istText) {
+                        ViewGroup.LayoutParams laPrmsForRect = (FrameLayout.LayoutParams) rect.getLayoutParams();
+                        laPrmsForRect.height = clip.getLayoutParams().width;
+                        laPrmsForRect.width = rect.getLayoutParams().width;
+                        rect.setY(clip.getY() - rect.getLayoutParams().height / 4);
+                        rect.setX(clip.getX() /*- rect.getLayoutParams().width / 8*/);
+                        rect.setLayoutParams(laPrmsForRect);
+                    }
                     break;
             }
             return true;
@@ -766,6 +750,14 @@ public class ClipView extends FrameLayout {
         rect.setLayoutParams(rect.getLayoutParams());
     }
 
+    public void fixRectForTextView() {
+        ViewGroup.LayoutParams laPrmsForRect = rect.getLayoutParams();
+        laPrmsForRect.height = clip.getLayoutParams().width;
+        laPrmsForRect.width = rect.getLayoutParams().width;
+        rect.setY(clip.getY() /*- rect.getLayoutParams().height / 4*/);//repeat
+        rect.setX(clip.getX() /*- rect.getLayoutParams().width / 8*/);
+        rect.setLayoutParams(laPrmsForRect);
+    }
 
     public void hideShowBorders(Clip clip) {
         for (int i = 0; i < clipsw.size(); i++) {
@@ -799,10 +791,11 @@ public class ClipView extends FrameLayout {
     public void setrectForDetectionX_Y() {
         rectFordetection = new RectF();
         rectForRemoving = new RectF();
-        rectFordetection.set(rect.getX(), rect.getY(), rect.getX() + rect.getLayoutParams().width, rect.getY() + rect.getLayoutParams().height);////was clip
+        //TODO set the last point for rectForDetection
+        rectFordetection.set(clip.getX(), clip.getY(), clip.getX() + clip.getLayoutParams().width, clip.getY() + clip.getLayoutParams().height);////was clip
         rectForRemoving.set(clip.getX(), clip.getY(), clip.getX() + 75, clip.getY() + 75);
-
     }
+
 
     public void addClipToArraylist() {
         background.addView(clip);

@@ -21,9 +21,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView imageClip, imagview;
     EditText editText;
     private ArrayList<ClipView> clips = new ArrayList<>();
-    String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
+    String gifUrl1 = "https://media.giphy.com/media/KdxMHWRXlMDYI/giphy.gif";
     String gifUrl2 = "https://media3.giphy.com/media/5ELFnK86mtFDO/200.gif";
     String gifUrl3 = "https://media4.giphy.com/media/11ruYKqYRD6FrO/200_s.gif";
+    String gifUrl4 = "https://media3.giphy.com/media/ErRhwTBpzGKEo/200.gif";
 
 
 
@@ -34,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
 
         background = (FrameLayout) findViewById(R.id.backround);
         imagview = (ImageView) findViewById(R.id.imageView);
-
+        Glide.with(this)
+                .load(gifUrl4)
+                .asGif()
+                .into(imagview);
         findViewById(R.id.button).setOnClickListener(dropClip);
         findViewById(R.id.button2).setOnClickListener(dropText);
         findViewById(R.id.button3).setOnClickListener(checkParams);
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             imageClip = new ImageView(getApplicationContext());
+            imageClip.setScaleType(ImageView.ScaleType.FIT_XY);
             Glide.with(getApplicationContext())
                     .load(gifUrl2)
                     .asGif()
@@ -80,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 if (clips.get(i).clip.getClipImage() != null) {
                     Log.d("clipParams", "getX = " + X + " getY =" + Y + " RotationAngel =" + clips.get(i).clip.getRotation() + " clipWidth= " + clips.get(i).clip.getLayoutParams().width + " clipHeight= " + clips.get(i).clip.getLayoutParams().height);
                 } else if (clips.get(i).clip.textV != null) {
-                    Log.d("clipParams", "TEXT " + "getX = " + clips.get(i).clip.getX() + " getY =" + clips.get(i).clip.getY() + " RotationAngel =" + clips.get(i).clip.getRotation() + " textSize= " + clips.get(i).clip.getTextsize() + " TEXT = " + clips.get(i).clip.getText());
+                    Log.d("clipParams", "TEXT " + "getX = " + clips.get(i).clip.getX() + " getY =" + clips.get(i).clip.getY() + " RotationAngel =" + clips.get(i).clip.getRotation() + " textSize= " + clips.get(i).clip.getTextsize() + " TEXT = " + clips.get(i).clip.getText()+" TextColor= "+clips.get(i).clip.getTxtColor());
                 }
             }
         }

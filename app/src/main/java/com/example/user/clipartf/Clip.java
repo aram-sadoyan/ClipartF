@@ -2,6 +2,7 @@ package com.example.user.clipartf;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Build;
@@ -57,7 +58,7 @@ public class Clip extends FrameLayout {
         }
         count = (float) rLayoutWidth / rLayoutHeight;
 
-        this.setBackgroundColor(Color.GRAY);////////
+        this.setBackgroundColor(Color.TRANSPARENT);////////
         this.setLayoutParams(clipParams);
 
         if (imView != null) {
@@ -143,6 +144,7 @@ public class Clip extends FrameLayout {
     }
 
     public void refreshTextSize(int sizeH) {
+        Log.d("swwxsxsa", String.valueOf(sizeH));
         if (textV != null) {
             int textsize = sizeH / 2;
             textV.setTextSize(TypedValue.COMPLEX_UNIT_PX, textsize);//was5
@@ -194,6 +196,13 @@ public class Clip extends FrameLayout {
         }
     }
 
+    public void setTextColor(int color) {
+        textV.setTextColor(color);
+    }
+
+    public ColorStateList getTxtColor() {
+        return textV.getTextColors();
+    }
 
 }
 
