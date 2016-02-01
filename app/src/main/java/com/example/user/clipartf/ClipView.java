@@ -5,21 +5,27 @@ import android.graphics.Color;
 
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.inputmethodservice.KeyboardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 
 import com.bumptech.glide.Glide;
@@ -33,7 +39,7 @@ public class ClipView extends FrameLayout {
 
     Clip clip;
     View borderBG;
-    FrameLayout background;
+    FrameLayout background, optionsTabFrame;
     ImageView moveBt;
     View rect;
     RectF rectFordetection, rectForRemoving, rectForTextView;
@@ -58,13 +64,12 @@ public class ClipView extends FrameLayout {
 
     ImageView imageClip, removeBtn;
     EditText txtView;
-    /*TextView txtView;*/
     Context context;
     boolean istText = true;
 
     private ArrayList<ClipView> clipsw = new ArrayList<>();
 
-    public ClipView(Context context, FrameLayout background, ImageView imageView, /*TextView */EditText textView) {
+    public ClipView(Context context, FrameLayout background, ImageView imageView, EditText textView) {
         super(context);
         this.imageClip = imageView;
         this.txtView = textView;
@@ -412,7 +417,9 @@ public class ClipView extends FrameLayout {
                     if (istText) {
                         if (rectFordetection.contains(event.getX(1), event.getY(1))) {
                             allowMove = false;
-                        }else{allowMove = true;}
+                        } else {
+                            allowMove = true;
+                        }
                         txtView.setSingleLine(false);
                     }
                     firstCheckForRemove = false;
@@ -487,6 +494,7 @@ public class ClipView extends FrameLayout {
                         removeBtn = clip.getBtnRemove();
                         removeBtn.setOnClickListener(removeTextClip);
                         txtView.callOnClick();
+                        createabMenu();
                     }
                     allowToCloseKeyboard = true;
                     allowToChange = true;
@@ -560,6 +568,15 @@ public class ClipView extends FrameLayout {
         fixRect();
         moveBt.setVisibility(GONE);
         fixMoveButton();
+
+
+    }
+
+
+    public void createabMenu() {
+
+        //TODO creating tab View
+
 
     }
 
