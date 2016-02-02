@@ -5,30 +5,25 @@ import android.graphics.Color;
 
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.inputmethodservice.KeyboardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -37,6 +32,7 @@ import java.util.ArrayList;
  */
 public class ClipView extends FrameLayout {
 
+    float deltaKeyboardHeight;
     Clip clip;
     View borderBG;
     FrameLayout background, optionsTabFrame;
@@ -45,6 +41,7 @@ public class ClipView extends FrameLayout {
     RectF rectFordetection, rectForRemoving, rectForTextView;
     String gifUrl = "http://45.media.tumblr.com/b223d08fa64fdb189eba40ae867c96d4/tumblr_o050ahX8VC1toe0eco1_1280.gif";
     FrameLayout.LayoutParams btnParams, clipMoveAndRotateRelParams, rectParams;
+    LinearLayout tabLayout;
     private float _xDelta;
     private float _xDeltaforMove;
     private float _yDeltaforMove;
@@ -56,9 +53,12 @@ public class ClipView extends FrameLayout {
     boolean allowToZoomFromSizeBlock = false;
     boolean continueMovingOnePoint = false;
     boolean keyboardIsOpened = false;
+    boolean allowremovingTab = true;
 
     private float degress;
     private float degres = 0, degres2 = 0, degres3 = 0, degresFinal, alfa1 = 0, degresAfterMultyTouch = 0;
+
+    private onProgressed onProgressed;
 
     float count = 0;
 
@@ -68,6 +68,7 @@ public class ClipView extends FrameLayout {
     boolean istText = true;
 
     private ArrayList<ClipView> clipsw = new ArrayList<>();
+    private Window window;
 
     public ClipView(Context context, FrameLayout background, ImageView imageView, EditText textView) {
         super(context);
@@ -81,7 +82,12 @@ public class ClipView extends FrameLayout {
         init();
     }
 
+    public ClipView(Context context) {
+        super(context);
+    }
+
     char chr;
+
 
     public void init() {
 
@@ -490,11 +496,11 @@ public class ClipView extends FrameLayout {
                     degresAfterMultyTouch = clip.getRotation();
                     movedFromMultitouch = true;
                     if (istText && allowToCloseKeyboard) {
+                        //Opening keyboard
                         removeBtn = new ImageView(context);
                         removeBtn = clip.getBtnRemove();
                         removeBtn.setOnClickListener(removeTextClip);
                         txtView.callOnClick();
-                        createabMenu();
                     }
                     allowToCloseKeyboard = true;
                     allowToChange = true;
@@ -518,6 +524,7 @@ public class ClipView extends FrameLayout {
     OnClickListener txtClick = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            //Opening keyboard
             txtView.setSingleLine(true);
             txtView.setFocusable(true);
             txtView.setSelection(txtView.getText().length(), txtView.getText().length());
@@ -526,6 +533,9 @@ public class ClipView extends FrameLayout {
             txtView.requestFocus();
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(txtView, InputMethodManager.SHOW_IMPLICIT);
+            createabMenu();
+            keyboardIsOpened = true;
+
 
         }
     };
@@ -544,7 +554,7 @@ public class ClipView extends FrameLayout {
     public void drop() {
         int MOVEBTN_RECT_SIZE = (int) getContext().getResources().getDimension(R.dimen.MOVEBTN_RECT_SIZE);
         clipMoveAndRotateRelParams = new FrameLayout.LayoutParams(/*70*/MOVEBTN_RECT_SIZE, MOVEBTN_RECT_SIZE);///button-size+margin
-        moveBt.setBackgroundColor(Color.GREEN);
+        moveBt.setBackgroundColor(Color.TRANSPARENT);
         moveBt.setX(clip.getX() + clip.getLayoutParams().width - MOVEBTN_RECT_SIZE);
         moveBt.setY(clip.getY() + clip.getLayoutParams().height - MOVEBTN_RECT_SIZE);
         moveBt.setLayoutParams(clipMoveAndRotateRelParams);
@@ -568,17 +578,107 @@ public class ClipView extends FrameLayout {
         fixRect();
         moveBt.setVisibility(GONE);
         fixMoveButton();
-
-
     }
-
 
     public void createabMenu() {
 
-        //TODO creating tab View
+       /* final Window mRootWindow = getWindow();
+        final View mRootView = mRootWindow.getDecorView().findViewById(android.R.id.content);
+        mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    public void onGlobalLayout() {
+                        Rect r = new Rect();
+                        View view = mRootWindow.getDecorView();
+                        view.getWindowVisibleDisplayFrame(r);
+                        deltaKeyboardHeight = r.bottom - 200;
+                        Log.d("xsxsxsx", " !!!!!!!!!!!!!!!! " + String.valueOf(deltaKeyboardHeight));
+                    }
+                });*/
 
+        //TODO creating tab View
+        LinearLayout.LayoutParams tab = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        tabLayout = new LinearLayout(context);
+        tabLayout.setOrientation(LinearLayout.HORIZONTAL);
+        tabLayout.setBackgroundColor(Color.GREEN);
+
+        Button btnT1 = new Button(context);
+        Button btnT2 = new Button(context);
+        Button btnT3 = new Button(context);
+        Button btnT4 = new Button(context);
+        btnT1.setText("btn1");
+        btnT2.setText("btn2");
+        btnT3.setText("btn3");
+        btnT4.setText("btn4");
+        btnT4.setGravity(1);
+        btnT3.setGravity(1);
+        btnT2.setGravity(1);
+        btnT1.setGravity(1);
+        btnT1.setTextColor(Color.RED);
+        btnT2.setTextColor(Color.RED);
+        btnT3.setTextColor(Color.RED);
+        btnT4.setTextColor(Color.RED);
+        btnT1.setBackgroundColor(Color.BLACK);
+        btnT2.setBackgroundColor(Color.BLACK);
+        btnT3.setBackgroundColor(Color.BLACK);
+        btnT4.setBackgroundColor(Color.BLACK);
+
+        btnT1.setOnClickListener(tabBtn1Listener);
+        btnT2.setOnClickListener(tabBtn2Listener);
+        btnT3.setOnClickListener(tabBtn3Listener);
+        btnT4.setOnClickListener(tabBtn4Listener);
+
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1);
+
+        tabLayout.addView(btnT1, param);
+        tabLayout.addView(btnT2, param);
+        tabLayout.addView(btnT3, param);
+        tabLayout.addView(btnT4, param);
+        tabLayout.setLayoutParams(tab);
+        Log.d("xsxsxsx", " 2 " + String.valueOf(deltaKeyboardHeight));
+        tabLayout.setTranslationY(932);///////////////
+        background.addView(tabLayout);
 
     }
+
+    View.OnClickListener tabBtn1Listener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("xsxsxsx", " 1 " + String.valueOf(MainActivity.deltaKeyboardHeight));
+        }
+    };
+
+    View.OnClickListener tabBtn2Listener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("xsxsxsx", " 2 " + String.valueOf(MainActivity.deltaKeyboardHeight));
+            allowremovingTab = false;
+            clearKeyboard();
+
+        }
+    };
+
+
+    View.OnClickListener tabBtn3Listener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("xsxsxsx", " 3 " + String.valueOf(MainActivity.deltaKeyboardHeight));
+            allowremovingTab = false;
+            clearKeyboard();
+
+        }
+    };
+
+
+    View.OnClickListener tabBtn4Listener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("xsxsxsx", " 4 " + String.valueOf(MainActivity.deltaKeyboardHeight));
+            allowremovingTab = false;
+            clearKeyboard();
+
+
+        }
+    };
 
 
     View.OnTouchListener moveBtTouch = new View.OnTouchListener() {
@@ -732,7 +832,12 @@ public class ClipView extends FrameLayout {
     }
 
     public void clearKeyboard() {
+        if (allowremovingTab) {
+              background.removeView(tabLayout);
+        }
+
         if (istText) {
+            keyboardIsOpened = false;
             txtView.clearFocus();
             txtView.requestFocus();
             txtView.setCursorVisible(false);
@@ -744,6 +849,7 @@ public class ClipView extends FrameLayout {
             }
         }
 
+        allowremovingTab = true;
     }
 
     public void fixMoveButton() {
@@ -824,5 +930,17 @@ public class ClipView extends FrameLayout {
         this.clipsw = clipslist;
     }
 
+    public boolean getKeybCHeck() {
+        return keyboardIsOpened;
+    }
 
+    public void setProgressedListener(onProgressed l) {
+        onProgressed = l;
+    }
+
+
+    public interface onProgressed {
+        void onProgressed(boolean isProgressed);
+
+    }
 }

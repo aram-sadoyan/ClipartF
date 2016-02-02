@@ -23,10 +23,17 @@
 
     </FrameLayout>
 
-    <include android:id="@+id/optionsTab"
+  <!--  <include android:id="@+id/optionsTab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/options"/>
+        android:layout_alignParentTop="true"
+        layout="@layout/options"/>-->
+
+    <FrameLayout
+        android:id="@+id/frgmCont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
     <Button
         android:id="@+id/button"
