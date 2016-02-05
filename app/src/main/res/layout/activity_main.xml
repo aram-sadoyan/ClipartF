@@ -8,32 +8,13 @@
 
 
 
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:id="@+id/backround"
-        android:layout_width="match_parent"
-        android:layout_height="500dp">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/imageView"
-            />
-
-    </FrameLayout>
 
   <!--  <include android:id="@+id/optionsTab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         layout="@layout/options"/>-->
-
-    <FrameLayout
-        android:id="@+id/frgmCont"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
 
     <Button
         android:id="@+id/button"
@@ -57,6 +38,33 @@
         android:text="addText"
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal|bottom" />
+
+
+
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:id="@+id/backround"
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageView"
+            android:visibility="gone"
+            />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_marginTop="100dp"
+        android:id="@+id/frgmCont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 
 </FrameLayout>
