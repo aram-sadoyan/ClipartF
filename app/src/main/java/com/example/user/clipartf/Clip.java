@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.text.InputFilter;
 import android.util.Log;
@@ -196,9 +199,18 @@ public class Clip extends FrameLayout {
         }
     }
 
-    public void setTextColor(int color) {
-        textV.setTextColor(color);
-    }
+
+
+   /* public RectF setRectForCheckText(float rotation){
+       RectF rectForTextView = new RectF();
+        Matrix m = new Matrix();
+        rectForTextView.set(this.getX(), this.getY(), this.getX() + this.getLayoutParams().width, this.getY() + this.getLayoutParams().height);
+        *//*rectForTextView.set(rect.getX(), rect.getY(), rect.getX() + rect.getLayoutParams().width, rect.getY() + rect.getLayoutParams().height);*//*
+        m.setRotate(rotation,rectForTextView.centerX(), rectForTextView.centerY());
+        m.mapRect(rectForTextView);
+     return   rectForTextView;
+
+    }*/
 
     public ColorStateList getTxtColor() {
         return textV.getTextColors();

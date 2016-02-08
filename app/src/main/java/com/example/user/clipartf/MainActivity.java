@@ -2,37 +2,27 @@ package com.example.user.clipartf;
 
 
 import android.app.Activity;
-import android.app.ActivityGroup;
 import android.app.FragmentTransaction;
-import android.app.LocalActivityManager;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TabHost;
-import android.widget.Toast;
+import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements FragmentColors.onSomeEventListener,FragmentFonts.onSomeEventListener,FragmentEffects.onSomeEventListener {
     Window mRootWindow;
+    Activity activity;
     ClipView clipView;
     FrameLayout background, options;
     ImageView imageClip, imagview;
@@ -47,24 +37,17 @@ public class MainActivity extends Activity {
     int deff = 0;
     static float deltaKeyboardHeight;
 
-    OneActivity frag1;
-    TwoActivity frag2;
-    FragmentTransaction fTrans;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        frag1 = new OneActivity();
-        frag2 = new TwoActivity();
 
         background = (FrameLayout) findViewById(R.id.backround);
         imagview = (ImageView) findViewById(R.id.imageView);
         /*options = (FrameLayout) findViewById(R.id.optionsTab);*/
         /*options.setVisibility(View.GONE);*/
         /*options.setY(0);*/
-
+        activity = this;
         Glide.with(this)
                 .load(gifUrl4)
                 .asGif()
@@ -72,12 +55,10 @@ public class MainActivity extends Activity {
         findViewById(R.id.button).setOnClickListener(dropClip);
         findViewById(R.id.button2).setOnClickListener(dropText);
         findViewById(R.id.button3).setOnClickListener(checkParams);
-       /* findViewById(R.id.btnTab1).setOnClickListener(keyboardTab1);
-        findViewById(R.id.btnTab2).setOnClickListener(keyboardTab2);
-        findViewById(R.id.btnTab3).setOnClickListener(keyboardTab3);
-        findViewById(R.id.btnTab4).setOnClickListener(keyboardTab4);*/
 
-       /* final Window mRootWindow = getWindow();
+        /*fragmentCreater();*/
+
+        final Window mRootWindow = getWindow();
         final View mRootView = mRootWindow.getDecorView().findViewById(android.R.id.content);
         mRootView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -85,43 +66,20 @@ public class MainActivity extends Activity {
                         Rect r = new Rect();
                         View view = mRootWindow.getDecorView();
                         view.getWindowVisibleDisplayFrame(r);
-                        deltaKeyboardHeight = r.bottom - 200;
-                        Log.d("xsxsxsx", " 1 "+ String.valueOf(deltaKeyboardHeight));
+                        deltaKeyboardHeight = r.bottom /*- 200*/;
+                        Log.d("keyboardH", " 1 " + String.valueOf(deltaKeyboardHeight));
                     }
-                });*/
+                });
     }
 
+    /*private void fragmentCreater() {
 
-    View.OnClickListener keyboardTab1 = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
+        if(clipView.getKeybCHeck()) {
+            FrameLayout.LayoutParams lParams3 = (FrameLayout.LayoutParams) findViewById(R.id.frgmCont).getLayoutParams();
+            lParams3.topMargin = clipView.getFragmentX();/////////setX For Tabs fragment
+            findViewById(R.id.frgmCont).setLayoutParams(lParams3);
         }
-    };
-
-    View.OnClickListener keyboardTab2 = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            allowForFix = false;
-            clipView.clearKeyboard();
-        }
-    };
-
-    View.OnClickListener keyboardTab3 = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            allowForFix = false;
-            clipView.clearKeyboard();
-        }
-    };
-
-    View.OnClickListener keyboardTab4 = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            allowForFix = false;
-            clipView.clearKeyboard();
-        }
-    };
+    }*/
 
 
     View.OnClickListener dropClip = new View.OnClickListener() {
@@ -133,7 +91,7 @@ public class MainActivity extends Activity {
                     .load(gifUrl2)
                     .asGif()
                     .into(imageClip);
-            clipView = new ClipView(getApplicationContext(), background, imageClip, null);
+            clipView = new ClipView(activity, getApplicationContext(), background, imageClip, null);
             clips.add(clipView);
             clipView.setArray(clips);
             clipView.addClipToArraylist();
@@ -144,10 +102,11 @@ public class MainActivity extends Activity {
         @Override
         public void onClick(View v) {
             editText = new EditText(getApplicationContext());
-            clipView = new ClipView(getApplicationContext(), background, null, editText);
+            clipView = new ClipView(activity, getApplicationContext(), background, null, editText);
             clips.add(clipView);
             clipView.setArray(clips);
             clipView.addClipToArraylist();
+
         }
     };
 
@@ -169,18 +128,31 @@ public class MainActivity extends Activity {
     };
 
     public void showTab() {
-        Log.d("TAG6748", "Showing ");
         options.setY(deltaKeyboardHeight);
         options.setVisibility(View.VISIBLE);
         /*hiden = false;*/
     }
 
     public void hideTab() {
-        Log.d("TAG6748", "hiding");
         options.setVisibility(View.GONE);
         hiden = true;
     }
 
 
+    @Override
+    public void someEventForColor(int color) {
+        Log.d("ccxcc","Color " + color);
 
+        clipView.setTextColor(Color.rgb(10*color, 0, 0));
+    }
+
+    @Override
+    public void someEventForFonts(int font) {
+        Log.d("ccxcc","Font " + font );
+    }
+
+    @Override
+    public void someEventForEffects(int effect) {
+        Log.d("ccxcc","Effect " + effect);
+    }
 }

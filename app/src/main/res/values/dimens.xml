@@ -10,5 +10,6 @@
     <dimen name="BUTTON_SIZE">20dp</dimen>
     <dimen name="MOVEBTN_RECT_SIZE">25dp</dimen>
     <dimen name="MARGIN">10dp</dimen>
+    <dimen name="TABLAYOUTHEIGH">60dp</dimen>
 
 </resources>

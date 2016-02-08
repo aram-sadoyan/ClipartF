@@ -1,0 +1,49 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/optionsTabb"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:layout_gravity="center_horizontal|top">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/holo_red_light"
+            android:text="text1"
+            android:id="@+id/btnTab1"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/holo_red_light"
+            android:text="text2"
+            android:id="@+id/btnTab2"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/holo_red_light"
+            android:text="text3"
+            android:id="@+id/btnTab3"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/holo_red_light"
+            android:text="text4"
+            android:id="@+id/btnTab4"/>
+
+
+    </LinearLayout>
+</FrameLayout>
+

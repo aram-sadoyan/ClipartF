@@ -7,39 +7,11 @@
     android:id="@+id/parent">
 
 
-
-
-
   <!--  <include android:id="@+id/optionsTab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         layout="@layout/options"/>-->
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="add clip"
-        android:layout_gravity="left|bottom" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="show clips params"
-        android:id="@+id/button3"
-        android:layout_gravity="right|bottom" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="addText"
-        android:id="@+id/button2"
-        android:layout_gravity="center_horizontal|bottom" />
-
-
 
 
     <FrameLayout
@@ -47,24 +19,49 @@
         android:orientation="vertical"
         android:id="@+id/backround"
         android:layout_width="match_parent"
-        android:layout_height="500dp">
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/imageView"
-            android:visibility="gone"
+
             />
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_marginTop="100dp"
-        android:id="@+id/frgmCont"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </FrameLayout>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="add clip"
+            android:layout_gravity="left|top" />
+
+        <Button
+            android:layout_width="123dp"
+            android:layout_height="wrap_content"
+            android:text="addText"
+            android:id="@+id/button2"
+            android:layout_gravity="center_horizontal|top" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="return params"
+            android:id="@+id/button3"
+            android:layout_gravity="right|top" />
+
+
+    </LinearLayout>
+
 
 
 </FrameLayout>
