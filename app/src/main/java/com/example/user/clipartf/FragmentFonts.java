@@ -18,16 +18,16 @@ public class FragmentFonts extends Fragment {
 
 
     public interface onSomeEventListener {
-        public void someEventForFonts(int font);
+        public void eventForFonts(int font);
     }
 
-    onSomeEventListener someEventListener;
+    onSomeEventListener someEventListener1;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            someEventListener = (onSomeEventListener) activity;
+            someEventListener1 = (onSomeEventListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
         }
@@ -59,8 +59,8 @@ public class FragmentFonts extends Fragment {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("fvcvcvcv", "pos " + position + " id " + id);
-                someEventListener.someEventForFonts(position);
+                Log.d("fvcvcvcv", "Font pos " + position + " id " + id);
+                someEventListener1.eventForFonts(position);
             }
         });
 

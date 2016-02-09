@@ -12,7 +12,6 @@ import android.widget.TextView;
  */
 public class AdapterFonts extends ArrayAdapter<String> {
 
-
     String[] objects;
     Context context;
 
@@ -22,15 +21,14 @@ public class AdapterFonts extends ArrayAdapter<String> {
         this.objects = objects;
     }
 
-
     @Override
     public View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
         TextView tv;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            tv = (TextView)inflater.inflate(R.layout.itemcolors,parent,false);
+            tv = (TextView)inflater.inflate(R.layout.itemfonts,parent,false);
         } else {
-            tv = (TextView) convertView;
+            tv = (TextView)convertView;
         }
         tv.setText(objects[position]);
         if (position % 2 == 0)

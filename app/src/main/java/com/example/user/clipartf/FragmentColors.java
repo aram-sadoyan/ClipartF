@@ -18,15 +18,13 @@ import android.widget.ImageView;
  */
 public class FragmentColors extends Fragment {
 
-    ImageView imageView;
-    EditText txtView;
-
 
     public interface onSomeEventListener {
-        public void someEventForColor(int color);
+        public void eventForColors(int color);
     }
 
     onSomeEventListener someEventListener;
+
 
 
     @Override
@@ -54,7 +52,7 @@ public class FragmentColors extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.three, null);
+        View v = inflater.inflate(R.layout.colors, null);
 
         final GridView gv = (GridView) v.findViewById(R.id.gvColors);
 
@@ -66,9 +64,8 @@ public class FragmentColors extends Fragment {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("fvcvcvcv", "pos " + position + " id " + id);
-                someEventListener.someEventForColor(position);
-
+                Log.d("fvcvcvcv", "Color pos " + position + " id " + id);
+                someEventListener.eventForColors(position);
             }
         });
 

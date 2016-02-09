@@ -1,6 +1,7 @@
 package com.example.user.clipartf;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Color;
@@ -20,7 +21,6 @@ import android.view.View;
 
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,18 +29,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-
 import java.util.ArrayList;
 
 /**
  * Created by user on 12/28/15.
  */
-public class ClipView extends FrameLayout {
+public class ClipView extends FrameLayout  {
 
-    fragmentForKeyboartTab fragmentContainer;
-
+    FrameLayout fragmentForKeyboartTab;
     FragmentFonts frag1;
     FragmentEffects frag2;
     FragmentColors frag3;
@@ -65,12 +61,15 @@ public class ClipView extends FrameLayout {
     private float _yDelta;
     private float _xDeltaOnePoint;
     private float _yDeltaOnePoint;
+    private int curentClip;
     boolean moved = false;
     boolean movedFromMultitouch = false;
     boolean allowToZoomFromSizeBlock = false;
     boolean continueMovingOnePoint = false;
+    boolean isdone = false;
+    boolean isdone2 = false;
     /*boolean keyboardIsOpened = false;*/
-    boolean alllowtoCloseTab = false;
+
     boolean tabMEnuCreated = false;
     boolean firstHeightCheck = false;
 
@@ -89,27 +88,23 @@ public class ClipView extends FrameLayout {
     boolean istText = true;
 
     private ArrayList<ClipView> clipsw = new ArrayList<>();
-    private Window window;
+    private ArrayList<Fragment> fragmentList = new ArrayList<>();
     Button btnT1, btnT2, btnT3, btnT4;
 
-    public ClipView(Activity activity, Context context, FrameLayout background, ImageView imageView, EditText textView) {
+    public ClipView(Activity activity, Context context, FrameLayout background, ImageView imageView, EditText textView,FrameLayout fragmentForKeyboartTab,ArrayList fragments) {
         super(context);
         this.imageClip = imageView;
         this.txtView = textView;
         this.context = context;
         this.activity = activity;
         this.background = background;
+        this.fragmentForKeyboartTab = fragmentForKeyboartTab;
+        this.fragmentList = fragments;
         if (textView == null) {
             istText = false;
         }
         init();
     }
-
-    public ClipView(Context context) {
-        super(context);
-    }
-
-    char chr;
 
     public void init() {
 
@@ -125,6 +120,7 @@ public class ClipView extends FrameLayout {
         background.setBackgroundColor(Color.TRANSPARENT);
         rect = new ImageButton(context);
         count = clip.getCount();
+        tabLayout = new LinearLayout(context);
         if (istText) {
             txtView.addTextChangedListener(new TextWatcher() {
                 int initialTxtlength = 5;
@@ -194,6 +190,8 @@ public class ClipView extends FrameLayout {
         @Override
         public void onClick(View v) {
             clearKeyboard();
+            tabLayout.setVisibility(GONE);
+            /*removeTab();*/
             hideShowBorders2(View.INVISIBLE, false);
             listenerSwitcher(clip, VISIBLE, false);
         }
@@ -220,8 +218,7 @@ public class ClipView extends FrameLayout {
         int deltaClipHeight = 0;
         float X = 0;
         float Y = 0;
-        float XOnePoint = 0;
-        float YOnePoint = 0;
+
         Point checker = new Point();
         /*PointF deltaPoint = new PointF();*/
         PointF startPointer0 = new PointF();
@@ -245,13 +242,12 @@ public class ClipView extends FrameLayout {
             Y = (int) event.getRawY();
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.d("nmhnmh","clea r "+keyBoardIsOpened);
-                    clearKeyboard();
+                    curentClip = getClipPosition(clip);
                     if (istText) {
+
                         setRectForTextViewDetectionX_Y();
                         deltaSize = 2;
-                    } else if (keyBoardIsOpened) {
-                        Log.d("nmhnmh","clear");
+                    } else {
                         clearKeyboard();
                     }
                     listenerSwitcher(clip, GONE, true);
@@ -264,9 +260,7 @@ public class ClipView extends FrameLayout {
                         ////
                         firstCheckForRemove = true;
                     }
-                    /*fixMoveButton();*/
-                    /*clip.invalidate();*/
-                    /////one tuch
+
                     if (event.getPointerCount() < 2) {
                         //One Pont touch
                         dimens = clip.getLayoutParams().width;
@@ -283,17 +277,20 @@ public class ClipView extends FrameLayout {
                     deltaPoint.y = clip.getLayoutParams().height - moveBt.getLayoutParams().height;*/
                     break;
                 case MotionEvent.ACTION_MOVE:
+
                     setrectForDetectionX_Y();
                     if (allowMove) {
                         clip.invalidate();
                         if (event.getPointerCount() <= 1) {
                             /////////////////  One Point ///////////
                             if (!continueMovingOnePoint) {
+
                                 FrameLayout.LayoutParams layoutParams5 = (FrameLayout.LayoutParams) clip.getLayoutParams();
                                 layoutParams5.leftMargin = (int) (X - _xDelta);
                                 layoutParams5.topMargin = (int) (Y - _yDelta);
                                 clip.setLayoutParams(layoutParams5);
                                 if (istText) {
+                                    clearKeyboard();
                                     fixRectForTextView();
                                 } else {
                                     fixRect();
@@ -318,6 +315,7 @@ public class ClipView extends FrameLayout {
                             /////////////////  Two Points ///////////
                             if (istText) {
                                 chekSize = 600;
+
                             } else {
                                 chekSize = 1600;
                             }
@@ -440,7 +438,7 @@ public class ClipView extends FrameLayout {
                     clip.refreshBtn(clip.getLayoutParams().width, clip.getLayoutParams().height);
 
                     if (checker.x != X || checker.y != Y) {
-                        clearKeyboard();
+                        /*clearKeyboard();*/
                         firstCheckForRemove = false;
                         allowToCloseKeyboard = false;
                     }
@@ -451,7 +449,7 @@ public class ClipView extends FrameLayout {
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     dimens = clip.getLayoutParams().width;/////new
-                    clearKeyboard();
+                    /*clearKeyboard();*/
                     if (istText) {
                         if (!rectForTextView.contains(event.getX(1), event.getY(1))) {
                             allowMove = false;
@@ -495,7 +493,6 @@ public class ClipView extends FrameLayout {
                     } else {
                         fixRect();
                     }
-
                    /* if (istText) {
                         ViewGroup.LayoutParams laPrmsForRect = (FrameLayout.LayoutParams) rect.getLayoutParams();
                         laPrmsForRect.height = clip.getLayoutParams().width;
@@ -558,7 +555,6 @@ public class ClipView extends FrameLayout {
         }
     };
 
-
     OnClickListener txtClick = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -573,10 +569,14 @@ public class ClipView extends FrameLayout {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(txtView, InputMethodManager.SHOW_IMPLICIT);
 
-            setListnerToRootView();
-            keyBoardIsOpened = true;
+            if(!isdone){
+                setListnerToRootView();
+                isdone = true;
+            }
 
-            /*keyboardIsOpened = true;*/
+            fragmentForKeyboartTab.setVisibility(VISIBLE);
+            tabLayout.setVisibility(VISIBLE);
+
         }
     };
 
@@ -591,29 +591,27 @@ public class ClipView extends FrameLayout {
                 view.getWindowVisibleDisplayFrame(r);
                 deltaKeyboardHeight = r.bottom;
                 if (!firstHeightCheck) {
-                    Log.d("keyboardLifecycle", "1st");
                     firstValue = r.bottom;
                     secondVlue = firstValue;
                     firstHeightCheck = true;
                 } else {
-                    Log.d("keyboardLifecycle", "1st");
                     secondVlue = r.bottom;
                 }
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if ((firstValue - secondVlue) != 0) {/*heightDiff > 100*/
-                    Log.d("keyboardLifecycle", "3st" + keyBoardIsOpened + tabMEnuCreated);
-                    if (!keyBoardIsOpened && !tabMEnuCreated) {
+                if ((firstValue - secondVlue) != 0) {
+                    firstHeightCheck = false;
+
+                    if (!isdone2) {
+                        Log.d("ddfdf","create!!! " + keyBoardIsOpened + " " + tabMEnuCreated);
                         createabMenu();
-                        /*background.removeView(tabLayout);*/
+                        isdone2 = true;
                     }
-                    tabMEnuCreated = true;
-                    keyBoardIsOpened = true;
+                    /*keyBoardIsOpened = true;*/
                 } else if (keyBoardIsOpened && !isOpened2) {
-                    Log.d("keyboardLifecycle", "RemoveTAB");
-                    background.removeView(tabLayout);
-                    background.removeView(fragmentContainer);
-                    invalidate();
+                    /*background.removeView(tabLayout);*/
+                    /*background.removeView(fragmentForKeyboartTab);*/
                     keyBoardIsOpened = false;
+                    tabMEnuCreated = false;
                     isOpened2 = false;
                     firstHeightCheck = true;
                 }
@@ -627,6 +625,8 @@ public class ClipView extends FrameLayout {
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (KeyEvent.KEYCODE_ENTER == keyCode) { // match ENTER key
                 clearKeyboard();
+                tabLayout.setVisibility(GONE);
+                removeTab();
                 return true;
             }
             return false;
@@ -656,7 +656,6 @@ public class ClipView extends FrameLayout {
         background.addView(moveBt);
         rect.setOnTouchListener(rectTouch);
         hideShowBorders2(GONE, true);
-        /*moveBt.setVisibility(VISIBLE);*/
         clip.setTranslationX(250);
         clip.setTranslationY(250);
         fixRect();
@@ -665,105 +664,81 @@ public class ClipView extends FrameLayout {
     }
 
     public void createabMenu() {
-
-        fragmentContainer = new fragmentForKeyboartTab(context);
-        fragmentContainer.setId(R.id.container);
-
-
-        Log.d("keyboardLifecycle", "CREATINGT_TAB");
-        frag1 = new FragmentFonts();
-        frag2 = new FragmentEffects();
-        frag3 = new FragmentColors();
-
-        Log.d("keyboardH", " finalyY!!!! " + String.valueOf(deltaKeyboardHeight));
         int tabLayHeight = (int) getContext().getResources().getDimension(R.dimen.TABLAYOUTHEIGH);
         LinearLayout.LayoutParams tab = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tabLayHeight, 1);
-        tabLayout = new LinearLayout(context);
+
         tabLayout.setOrientation(LinearLayout.HORIZONTAL);
         tabLayout.setBackgroundColor(Color.DKGRAY);
-
         btnT1 = new Button(context);
         btnT2 = new Button(context);
         btnT3 = new Button(context);
         btnT4 = new Button(context);
-
         btnT2.setTag(1);
         btnT3.setTag(2);
         btnT4.setTag(3);
-
         btnT1.setText("Key");
         btnT2.setText("Fonts");
         btnT3.setText("Effect");
         btnT4.setText("Color");
-
         btnT4.setGravity(1);
         btnT3.setGravity(1);
         btnT2.setGravity(1);
         btnT1.setGravity(1);
-
         btnT1.setTextColor(Color.RED);
         btnT2.setTextColor(Color.RED);
         btnT3.setTextColor(Color.RED);
         btnT4.setTextColor(Color.RED);
-
         btnT1.setBackgroundColor(Color.TRANSPARENT);
         btnT2.setBackgroundColor(Color.TRANSPARENT);
         btnT3.setBackgroundColor(Color.TRANSPARENT);
         btnT4.setBackgroundColor(Color.TRANSPARENT);
-
         btnT1.setOnClickListener(tabBtn1Listener);
-        btnT2.setOnClickListener(fragm1);
-        btnT3.setOnClickListener(fragm1);
-        btnT4.setOnClickListener(fragm1);
-
+        btnT2.setOnClickListener(tablistener);
+        btnT3.setOnClickListener(tablistener);
+        btnT4.setOnClickListener(tablistener);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1);//was 0,match_parent
+        Log.d("ddfdf","create1111111111 " + deltaKeyboardHeight);
+        fragmentForKeyboartTab.setY(deltaKeyboardHeight);
+        fragmentForKeyboartTab.setVisibility(VISIBLE);
+        tabLayout.setVisibility(VISIBLE);
 
-        /*btnT1.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);*/
         tabLayout.addView(btnT1, param);
         tabLayout.addView(btnT2, param);
         tabLayout.addView(btnT3, param);
         tabLayout.addView(btnT4, param);
         tabLayout.setLayoutParams(tab);
-
         tabLayout.setTranslationY(deltaKeyboardHeight - tabLayHeight);///////////////was 932
-        fragmentContainer.setY(deltaKeyboardHeight);
-        background.addView(fragmentContainer);
         background.addView(tabLayout);
-        background.requestLayout();
-        tabLayout.invalidate();
-
+        tabMEnuCreated = true;
     }
 
 
     View.OnClickListener tabBtn1Listener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d("xsxsxsx", " 1 " + String.valueOf(MainActivity.deltaKeyboardHeight));
-            /*clearfragment();*////////repeat
-            txtView.callOnClick();
+
         }
     };
 
+    View.OnClickListener tablistener = new OnClickListener() {
 
-    View.OnClickListener fragm1 = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            switcher();
             FragmentTransaction fTrans = (activity).getFragmentManager().beginTransaction();
-            Log.d("keyboardLifecycle", "FRAGMENT_TOUCH");
             isOpened2 = true;
             switch ((int) v.getTag()) {
                 case 1:
-                    fTrans.replace(R.id.container, frag1);
+                    fTrans.replace(R.id.container, fragmentList.get(0));
                     break;
                 case 2:
-                    fTrans.replace(R.id.container, frag2);
+                    fTrans.replace(R.id.container, fragmentList.get(1));
                     break;
                 case 3:
-                    fTrans.replace(R.id.container, frag3);
+                    fTrans.replace(R.id.container, fragmentList.get(2));
                     break;
             }
             fTrans.commit();
-            switcher();
         }
     };
 
@@ -786,7 +761,6 @@ public class ClipView extends FrameLayout {
         int clipCenterX = 0;
         int clipCenterY = 0;
         int w = 0, h = 0;
-        boolean sized = false;
         float X = 0;
         float Y = 0;
         int count = 0;
@@ -868,14 +842,6 @@ public class ClipView extends FrameLayout {
                     moved = true;
                     fixRect();
                     fixMoveButton();
-                   /* if (istText) {
-                        ViewGroup.LayoutParams laPrmsForRect = (FrameLayout.LayoutParams) rect.getLayoutParams();
-                        laPrmsForRect.height = clip.getLayoutParams().width;
-                        laPrmsForRect.width = rect.getLayoutParams().width;
-                        rect.setY(clip.getY() - rect.getLayoutParams().height / 4);
-                        rect.setX(clip.getX() *//*- rect.getLayoutParams().width / 8*//*);
-                        rect.setLayoutParams(laPrmsForRect);
-                    }*/
                     break;
             }
             return true;
@@ -928,21 +894,22 @@ public class ClipView extends FrameLayout {
     }
 
     public void clearKeyboard() {
-        background.removeView(tabLayout);
         for (int i = 0; i < clipsw.size(); i++) {
             if (clipsw.get(i).istText) {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(clipsw.get(i).clip.textV.getWindowToken(), 0);
-
-                clearfragment();
-
-                background.removeView(fragmentContainer);
-                invalidate();
-                tabMEnuCreated = false;
+                fragmentForKeyboartTab.setVisibility(GONE);
+                tabLayout.setVisibility(GONE);
             }
         }
 
-        keyBoardIsOpened = false;
+
+    }
+
+
+    public void removeTab(){
+        /*background.removeView(tabLayout);
+        tabMEnuCreated = false;*/
     }
 
     public void fixMoveButton() {
@@ -1016,10 +983,8 @@ public class ClipView extends FrameLayout {
     public void setrectForDetectionX_Y() {
         rectFordetection = new RectF();
         rectForRemoving = new RectF();
-        //TODO set the last point for rectForDetection
         rectFordetection.set(clip.getX(), clip.getY(), clip.getX() + clip.getLayoutParams().width, clip.getY() + clip.getLayoutParams().height);////was clip
         rectForRemoving.set(clip.getX(), clip.getY(), clip.getX() + 75, clip.getY() + 75);
-
     }
 
     public void setRectForTextViewDetectionX_Y() {
@@ -1030,7 +995,6 @@ public class ClipView extends FrameLayout {
         /*rectForTextView.set(rect.getX(), rect.getY(), rect.getX() + rect.getLayoutParams().width, rect.getY() + rect.getLayoutParams().height);*/
         m.setRotate(clip.getRotation(), rectForTextView.centerX(), rectForTextView.centerY());
         m.mapRect(rectForTextView);
-        Log.d("fdfdf", clip.getRotation() + " " + clip.getX() + "     width " + clip.getLayoutParams().width + "  " + (clip.getX() + clip.getLayoutParams().width) + "  " + rectForTextView.left + "  " + rectForTextView);
     }
 
     public void clearfragment() {
@@ -1041,6 +1005,7 @@ public class ClipView extends FrameLayout {
             fTrans.remove(frag3);
             invalidate();
             fTrans.commit();
+            tabMEnuCreated = false;
         }
     }
 
@@ -1062,8 +1027,13 @@ public class ClipView extends FrameLayout {
         return (int) deltaKeyboardHeight;
     }
 
-    public void setTextColor(int color) {
-        clipsw.get(getClipPosition(clip)).clip.textV.setTextColor(color);
+    public void setTextColor(int color,int currentClip) {
+        Log.d("vbvnbn","  curent for color " + String.valueOf(indexOfChild(txtView)) +" "+ currentClip);
+        txtView.setTextColor(color);
+    }
+
+    public int getcurrentClip(){
+        return curentClip;
     }
 
 }

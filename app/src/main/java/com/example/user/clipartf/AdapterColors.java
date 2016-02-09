@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 /**
@@ -12,7 +14,7 @@ import android.widget.TextView;
  */
 
 
-    public class AdapterColors extends ArrayAdapter<String> {
+public class AdapterColors extends ArrayAdapter<String> {
 
 
     String[] objects;
@@ -24,22 +26,19 @@ import android.widget.TextView;
         this.objects = objects;
     }
 
-
     @Override
     public View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
-        TextView tv;
+        TextView btn;
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            tv = (TextView)inflater.inflate(R.layout.itemcolors,parent,false);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            btn = (TextView) inflater.inflate(R.layout.itemcolors, parent, false);
         } else {
-            tv = (TextView) convertView;
+            btn = (TextView) convertView;
         }
-        tv.setText(objects[position]);
-        if (position % 2 == 0)
-            tv.setBackgroundColor(Color.BLACK);
-        else
-            tv.setBackgroundColor(Color.WHITE);
+        btn.setText(objects[position]);
 
-        return tv;
+        btn.setBackgroundColor(Color.GRAY);
+
+        return btn;
     }
 }
